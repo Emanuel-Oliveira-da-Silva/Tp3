@@ -124,8 +124,8 @@ void buscarArbol(Materia *listaMaterias)
     int rta = 0;
     do
     {
-        cout << "Buscar materias por Codigo o por nombre?" << endl
-             << "1.Nombre" << endl
+        cout << "Buscar materias por Codigo o por palabra Clave?" << endl
+             << "1.Palabra clave" << endl
              << "2.Codigo" << endl;
         cin >> rta;
 
@@ -133,9 +133,9 @@ void buscarArbol(Materia *listaMaterias)
         {
         case 1:
         {
-            // Opcion 1: Por nombre
+            // Opcion 1: Por palabra clave
             char nombre[50];
-            cout << "Ingrese el nombre de la materia que desea buscar: ";
+            cout << "Ingrese una palabra clave de la materia que desea buscar: ";
             cin >> nombre;
             materia = buscarNombre(listaMaterias, nombre);
             break;
