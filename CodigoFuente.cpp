@@ -79,8 +79,7 @@ int main()
     int desicion = 1;
     do
     {
-        cout << endl
-             << "Que desea hacer?" << endl
+        cout << "Que desea hacer?" << endl
              << "1.Buscar una materia" << endl
              << "2.Mapa de todas las materias" << endl
              << "3.Salir" << endl;
@@ -399,7 +398,8 @@ void simplificarString(char nombre[])
 
 void mostrarArbolMateria(Materia *materia, Materia *materias)
 {
-    cout << (char)250 << (char)254 << ' '
+    cout << endl
+         << (char)250 << (char)254 << ' '
          << materia->codigo << " : " << materia->nombre
          << ' ' << (char)254 << (char)250 << endl;
 
