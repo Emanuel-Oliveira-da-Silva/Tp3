@@ -34,9 +34,11 @@ struct Materia
 #pragma region Funciones
 // Funcionales
 void simplificarString(char[]);
-void cargarFila(FILE *, Materia *&);
+void cargarMateria(FILE *, Materia *&);
+void cargarCorrelativas(FILE *, Materia *&);
 void obtenerCorrelativas(Materia *, Materia *, Materia *&);
-Materia convertirFila(Fila, Materia *);
+Materia convertirFilaMateria(Fila, Materia *);
+NodoCorrelativa convertirFilaCorrelativa(Materia *, Fila);
 Materia *importarMaterias(char[]);
 int contarCorrelativas(Materia *, Materia *);
 
@@ -224,44 +226,56 @@ Materia *importarMaterias(char nombre[])
 
     while (!feof(archivo))
     {
-        // Cargar las Filas en las estucturas
-        cargarFila(archivo, lista);
+        // Importar las Materias
+        cargarMateria(archivo, lista);
+    }
+
+    archivo = fopen(nombre, "rb");
+
+    while (!feof(archivo))
+    {
+        // Importar las correlativas
+        cargarCorrelativas(archivo, lista);
     }
 
     fclose(archivo);
     return lista;
 }
 
-void cargarFila(FILE *archivo, Materia *&lista)
+void cargarMateria(FILE *archivo, Materia *&lista)
 {
     // Cargar en estructura Fila
     Fila fila;
     fread(&fila, sizeof(Fila), 1, archivo);
 
-    Materia materia = convertirFila(fila, lista);
+    Materia materia = convertirFilaMateria(fila, lista);
 
-    // buscar materias con el mismo codigo
-    Materia *Twin = busquedaCodigo(lista, materia.codigo);
-
-    if (Twin)
+    if (busquedaCodigo(lista, materia.codigo))
     {
-        if (materia.correlativas)
-        {
-            // Mismo codigo entonces adjuntar una nueva Correlativa a la lista de la materia
-            NodoCorrelativa *listaCorrelativas = materia.correlativas;
-            NodoCorrelativa correlativa = *listaCorrelativas;
-            agregarCorrelativa(Twin->correlativas, correlativa);
-        }
-
         return;
     }
 
-    // No existe mismo codigo entonces agregar materia a lista
-    // Caso la lista sea vacía va a crear la materia igual
     agregarMateria(lista, materia);
 }
 
-Materia convertirFila(Fila fila, Materia *lista)
+void cargarCorrelativas(FILE *archivo, Materia *&lista)
+{
+    // Cargar en estructura Fila
+    Fila fila;
+    fread(&fila, sizeof(Fila), 1, archivo);
+
+    // buscar materia con el mismo codigo
+    Materia *Twin = busquedaCodigo(lista, fila.codigo);
+
+    if (Twin != NULL && busquedaNombre(lista, fila.nombreCorrelativa) != NULL)
+    {
+        // Mismo codigo entonces adjuntar una nueva Correlativa a la lista de la materia
+        NodoCorrelativa correlativa = convertirFilaCorrelativa(lista, fila);
+        agregarCorrelativa(Twin->correlativas, correlativa);
+    }
+}
+
+Materia convertirFilaMateria(Fila fila, Materia *lista)
 {
     // Cargar Codigo y nombre en la materia
     Materia materia;
@@ -273,6 +287,11 @@ Materia convertirFila(Fila fila, Materia *lista)
     strcpy(materia.nombre, nombre);
     materia.correlativas = NULL;
 
+    return materia;
+}
+
+NodoCorrelativa convertirFilaCorrelativa(Materia *lista, Fila fila)
+{
     // Buscar la Correlativa por nombre y cargarlo en la correlativa
     Materia *Aux = busquedaNombre(lista, fila.nombreCorrelativa);
 
@@ -302,11 +321,8 @@ Materia convertirFila(Fila fila, Materia *lista)
             correlativa.finalAprobado = false;
         }
 
-        // Agregar Correlativa a la lista de la materia
-        agregarCorrelativa(materia.correlativas, correlativa);
+        return correlativa;
     }
-
-    return materia;
 }
 
 Materia *buscarNombre(Materia *lista, char nombre[])
