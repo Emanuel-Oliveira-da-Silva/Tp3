@@ -396,7 +396,8 @@ Materia *buscarNombre(Materia *lista, char nombre[])
 
         if (!materia)
         {
-            cout << "ERROR 3: Materia no encontrada, Ingrese una materia valida" << endl
+            cout << endl
+                 << "ERROR 3: Materia no encontrada, Ingrese una materia valida" << endl
                  << endl;
         }
     } while (!materia);
@@ -440,296 +441,301 @@ Materia *busquedaCodigo(Materia *lista, int codigo)
 
 void simplificarString(char nombre[])
 {
-
     for (int i = 0; i < strlen(nombre); i++)
     {
-        if (nombre[i] == 'á' || nombre[i] == 'Á' || nombre[i] == 'ä' || nombre[i] == 'Ä')
+        if (nombre[i] == 'á' || nombre[i] == 'Á' || nombre[i] == 'ä' || nombre[i] == 'Ä' ||
+            nombre[i] == -96 || nombre[i] == -124 || nombre[i] == -114)
         {
             nombre[i] = 'a';
         }
-        else if (nombre[i] == 'é' || nombre[i] == 'É' || nombre[i] == 'ë' || nombre[i] == 'Ë')
+        else if (nombre[i] == 'é' || nombre[i] == 'É' || nombre[i] == 'ë' || nombre[i] == 'Ë' ||
+                 nombre[i] == -126 || nombre[i] == -112 || nombre[i] == -119)
         {
             nombre[i] = 'e';
         }
-        else if (nombre[i] == 'í' || nombre[i] == 'Í' || nombre[i] == 'ï' || nombre[i] == 'Ï')
+        else if (nombre[i] == 'í' || nombre[i] == 'Í' || nombre[i] == 'ï' || nombre[i] == 'Ï' ||
+                 nombre[i] == -95 || nombre[i] == -117)
         {
             nombre[i] = 'i';
         }
-        else if (nombre[i] == 'ó' || nombre[i] == 'Ó' || nombre[i] == 'ö' || nombre[i] == 'Ö')
+        else if (nombre[i] == 'ó' || nombre[i] == 'Ó' || nombre[i] == 'ö' || nombre[i] == 'Ö' ||
+                 nombre[i] == -94 || nombre[i] == -108 || nombre[i] == -103)
         {
             nombre[i] = 'o';
         }
-        else if (nombre[i] == 'ú' || nombre[i] == 'Ú' || nombre[i] == 'ü' || nombre[i] == 'Ü')
+        else if (nombre[i] == 'ú' || nombre[i] == 'Ú' || nombre[i] == 'ü' || nombre[i] == 'Ü' ||
+                 nombre[i] == -93 || nombre[i] == -127 || nombre[i] == -102)
         {
             nombre[i] = 'u';
         }
-        else if (nombre[i] == 'ñ' || nombre[i] == 'Ñ')
+        else if (nombre[i] == 'ñ' || nombre[i] == 'Ñ' ||
+                 nombre[i] == -92 || nombre[i] == -91)
         {
             nombre[i] = 'n';
         }
         nombre[i] = tolower(nombre[i]);
-    }
-}
-
-void mostrarArbolMateria(Materia *materia, Materia *materias)
-{
-    cout << endl
-         << (char)250 << (char)254 << ' '
-         << materia->codigo << " : " << materia->nombre
-         << ' ' << (char)254 << (char)250 << endl;
-
-    char prefijo[256];
-    for (int i = 0; i < DISTANCIA_RAMAS; i++)
-    {
-        prefijo[i] = ' ';
-    }
-    prefijo[DISTANCIA_RAMAS] = '/0';
-    mostrarCorrelativas(materia, materias, DISTANCIA_RAMAS, prefijo);
-}
-
-void mostrarCorrelativas(Materia *materia, Materia *materias, int i, char prefijo[])
-{
-    NodoCorrelativa *correlativa = materia->correlativas;
-
-    while (correlativa != NULL)
-    {
-        Materia *Aux = busquedaCodigo(materias, correlativa->codMateria);
-
-        for (int j = 0; j < i; j++)
-        {
-            if (prefijo[j] != '/0')
-                cout << prefijo[j];
-            else
-                cout << ' ';
-        }
-        cout << (char)186 << endl;
-
-        for (int j = 0; j < i; j++)
-        {
-            if (prefijo[j] != '/0')
-                cout << prefijo[j];
-            else
-                cout << ' ';
-        }
-
-        if (correlativa->sig)
-        {
-            cout << (char)204;
-        }
-        else
-        {
-            cout << (char)200;
-        }
-
-        cout << correlativa->codMateria << ":" << Aux->nombre << endl;
-        for (int j = 0; j < i; j++)
-        {
-            if (prefijo[j] != '/0')
-                cout << prefijo[j];
-            else
-                cout << ' ';
-        }
-        if (correlativa->sig)
-        {
-            cout << (char)186;
-        }
-        else
-        {
-            cout << ' ';
-        }
-        cout << ' ' << (char)195 << "Cursada ";
-        (correlativa->cursadaAprobada) ? cout << "Requerida" : cout << "no Requerida";
-        cout << endl;
-
-        for (int j = 0; j < i; j++)
-        {
-            if (prefijo[j] != '/0')
-                cout << prefijo[j];
-            else
-                cout << ' ';
-        }
-        if (correlativa->sig)
-        {
-            cout << (char)186;
-        }
-        else
-        {
-            cout << ' ';
-        }
-        cout << ' ' << (char)192 << "Parcial ";
-        (correlativa->finalAprobado) ? cout << "Aprobado" : cout << "Pendiendte";
-        cout << endl;
-
-        if (Aux->correlativas)
-        {
-            char sigPrefijo[256];
-            strcpy(sigPrefijo, prefijo);
-
-            if (correlativa->sig)
-            {
-                sigPrefijo[i] = (char)186;
-            }
-            else
-                sigPrefijo[i] = ' ';
-
-            for (int j = 1; j < DISTANCIA_RAMAS; j++)
-            {
-                sigPrefijo[i + j] = ' ';
-            }
-
-            sigPrefijo[i + DISTANCIA_RAMAS] = '/0';
-
-            mostrarCorrelativas(Aux, materias, i + DISTANCIA_RAMAS, sigPrefijo);
-        }
-
-        correlativa = correlativa->sig;
-    }
-    return;
-}
-
-int contarCorrelativas(Materia *lista, Materia *materia)
-{
-    NodoCorrelativa *correlativa = materia->correlativas;
-    int i = 0;
-
-    while (correlativa != NULL)
-    {
-        Materia *Aux = busquedaCodigo(lista, correlativa->codMateria);
-        i++;
-
-        if (Aux->correlativas)
-        {
-            i += contarCorrelativas(lista, Aux);
-        }
-
-        correlativa = correlativa->sig;
-    }
-    return i;
-}
-
-void agregarCorrelativa(NodoCorrelativa *&lista, NodoCorrelativa correlativa)
-{
-    NodoCorrelativa *Nuevo = new NodoCorrelativa();
-    *Nuevo = correlativa;
-    Nuevo->sig = lista;
-    lista = Nuevo;
-}
-
-void obtenerCorrelativas(Materia *lista, Materia *materia, Materia *&listaCorrelativas)
-{
-
-    NodoCorrelativa *correlativa = materia->correlativas;
-    while (correlativa != NULL)
-    {
-
-        Materia *Aux = busquedaCodigo(lista, correlativa->codMateria);
-
-        if (Aux)
-        {
-            if (!busquedaCodigo(listaCorrelativas, Aux->codigo))
-            {
-                agregarMateria(listaCorrelativas, *Aux);
-            }
-        }
-
-        if (Aux->correlativas)
-        {
-            obtenerCorrelativas(lista, Aux, listaCorrelativas);
-        }
-
-        correlativa = correlativa->sig;
-    }
-    return;
-}
-
-void agregarMateria(Materia *&lista, Materia materia)
-{
-    Materia *Nuevo = new Materia();
-    *Nuevo = materia;
-    Nuevo->sig = lista;
-    lista = Nuevo;
-}
-
-void borrarIguales(Materia *&listaModificada, Materia *lista)
-{
-    Materia *Aux = lista;
-    while (Aux != NULL)
-    {
-
-        borrarMateria(listaModificada, *Aux);
-        Aux = Aux->sig;
-    }
-}
-
-void borrarMateria(Materia *&lista, Materia materia)
-{
-    if (lista->codigo == materia.codigo)
-    {
-        Materia *eliminado = lista;
-        lista = lista->sig;
-        delete eliminado;
         return;
     }
 
-    Materia *Aux = lista;
-    Materia *anterior = NULL;
-    while (Aux != NULL)
+    void mostrarArbolMateria(Materia * materia, Materia * materias)
     {
-        if (Aux->codigo == materia.codigo)
+        cout << endl
+             << (char)250 << (char)254 << ' '
+             << materia->codigo << " : " << materia->nombre
+             << ' ' << (char)254 << (char)250 << endl;
+
+        char prefijo[256];
+        for (int i = 0; i < DISTANCIA_RAMAS; i++)
         {
-            Materia *eliminado = Aux;
-            anterior->sig = Aux->sig;
-            Aux = Aux->sig;
-            delete eliminado;
-            if (!Aux)
+            prefijo[i] = ' ';
+        }
+        prefijo[DISTANCIA_RAMAS] = '/0';
+        mostrarCorrelativas(materia, materias, DISTANCIA_RAMAS, prefijo);
+    }
+
+    void mostrarCorrelativas(Materia * materia, Materia * materias, int i, char prefijo[])
+    {
+        NodoCorrelativa *correlativa = materia->correlativas;
+
+        while (correlativa != NULL)
+        {
+            Materia *Aux = busquedaCodigo(materias, correlativa->codMateria);
+
+            for (int j = 0; j < i; j++)
             {
-                return;
+                if (prefijo[j] != '/0')
+                    cout << prefijo[j];
+                else
+                    cout << ' ';
             }
+            cout << (char)186 << endl;
+
+            for (int j = 0; j < i; j++)
+            {
+                if (prefijo[j] != '/0')
+                    cout << prefijo[j];
+                else
+                    cout << ' ';
+            }
+
+            if (correlativa->sig)
+            {
+                cout << (char)204;
+            }
+            else
+            {
+                cout << (char)200;
+            }
+
+            cout << correlativa->codMateria << ":" << Aux->nombre << endl;
+            for (int j = 0; j < i; j++)
+            {
+                if (prefijo[j] != '/0')
+                    cout << prefijo[j];
+                else
+                    cout << ' ';
+            }
+            if (correlativa->sig)
+            {
+                cout << (char)186;
+            }
+            else
+            {
+                cout << ' ';
+            }
+            cout << ' ' << (char)195 << "Cursada ";
+            (correlativa->cursadaAprobada) ? cout << "Requerida" : cout << "no Requerida";
+            cout << endl;
+
+            for (int j = 0; j < i; j++)
+            {
+                if (prefijo[j] != '/0')
+                    cout << prefijo[j];
+                else
+                    cout << ' ';
+            }
+            if (correlativa->sig)
+            {
+                cout << (char)186;
+            }
+            else
+            {
+                cout << ' ';
+            }
+            cout << ' ' << (char)192 << "Parcial ";
+            (correlativa->finalAprobado) ? cout << "Aprobado" : cout << "Pendiendte";
+            cout << endl;
+
+            if (Aux->correlativas)
+            {
+                char sigPrefijo[256];
+                strcpy(sigPrefijo, prefijo);
+
+                if (correlativa->sig)
+                {
+                    sigPrefijo[i] = (char)186;
+                }
+                else
+                    sigPrefijo[i] = ' ';
+
+                for (int j = 1; j < DISTANCIA_RAMAS; j++)
+                {
+                    sigPrefijo[i + j] = ' ';
+                }
+
+                sigPrefijo[i + DISTANCIA_RAMAS] = '/0';
+
+                mostrarCorrelativas(Aux, materias, i + DISTANCIA_RAMAS, sigPrefijo);
+            }
+
+            correlativa = correlativa->sig;
+        }
+        return;
+    }
+
+    int contarCorrelativas(Materia * lista, Materia * materia)
+    {
+        NodoCorrelativa *correlativa = materia->correlativas;
+        int i = 0;
+
+        while (correlativa != NULL)
+        {
+            Materia *Aux = busquedaCodigo(lista, correlativa->codMateria);
+            i++;
+
+            if (Aux->correlativas)
+            {
+                i += contarCorrelativas(lista, Aux);
+            }
+
+            correlativa = correlativa->sig;
+        }
+        return i;
+    }
+
+    void agregarCorrelativa(NodoCorrelativa * &lista, NodoCorrelativa correlativa)
+    {
+        NodoCorrelativa *Nuevo = new NodoCorrelativa();
+        *Nuevo = correlativa;
+        Nuevo->sig = lista;
+        lista = Nuevo;
+    }
+
+    void obtenerCorrelativas(Materia * lista, Materia * materia, Materia * &listaCorrelativas)
+    {
+
+        NodoCorrelativa *correlativa = materia->correlativas;
+        while (correlativa != NULL)
+        {
+
+            Materia *Aux = busquedaCodigo(lista, correlativa->codMateria);
+
+            if (Aux)
+            {
+                if (!busquedaCodigo(listaCorrelativas, Aux->codigo))
+                {
+                    agregarMateria(listaCorrelativas, *Aux);
+                }
+            }
+
+            if (Aux->correlativas)
+            {
+                obtenerCorrelativas(lista, Aux, listaCorrelativas);
+            }
+
+            correlativa = correlativa->sig;
+        }
+        return;
+    }
+
+    void agregarMateria(Materia * &lista, Materia materia)
+    {
+        Materia *Nuevo = new Materia();
+        *Nuevo = materia;
+        Nuevo->sig = lista;
+        lista = Nuevo;
+    }
+
+    void borrarIguales(Materia * &listaModificada, Materia * lista)
+    {
+        Materia *Aux = lista;
+        while (Aux != NULL)
+        {
+
+            borrarMateria(listaModificada, *Aux);
+            Aux = Aux->sig;
+        }
+    }
+
+    void borrarMateria(Materia * &lista, Materia materia)
+    {
+        if (lista->codigo == materia.codigo)
+        {
+            Materia *eliminado = lista;
+            lista = lista->sig;
+            delete eliminado;
+            return;
         }
 
-        anterior = Aux;
-        Aux = Aux->sig;
-    }
-}
+        Materia *Aux = lista;
+        Materia *anterior = NULL;
+        while (Aux != NULL)
+        {
+            if (Aux->codigo == materia.codigo)
+            {
+                Materia *eliminado = Aux;
+                anterior->sig = Aux->sig;
+                Aux = Aux->sig;
+                delete eliminado;
+                if (!Aux)
+                {
+                    return;
+                }
+            }
 
-void duplicarLista(Materia *&listaDestino, Materia *listaRaiz)
-{
-    Materia *Aux = listaRaiz;
-    while (Aux != NULL)
+            anterior = Aux;
+            Aux = Aux->sig;
+        }
+    }
+
+    void duplicarLista(Materia * &listaDestino, Materia * listaRaiz)
     {
-        agregarMateria(listaDestino, *Aux);
-        Aux = Aux->sig;
+        Materia *Aux = listaRaiz;
+        while (Aux != NULL)
+        {
+            agregarMateria(listaDestino, *Aux);
+            Aux = Aux->sig;
+        }
     }
-}
 
-void borrarLista(Materia *&lista)
-{
-    Materia *Aux = lista;
-    while (Aux != NULL)
+    void borrarLista(Materia * &lista)
     {
-        Materia *eliminado = Aux;
-        Aux = Aux->sig;
-        delete eliminado;
+        Materia *Aux = lista;
+        while (Aux != NULL)
+        {
+            Materia *eliminado = Aux;
+            Aux = Aux->sig;
+            delete eliminado;
+        }
+        lista = Aux;
     }
-    lista = Aux;
-}
 
-void borrarNodoLista(NodoBusqueda *&lista)
-{
-    NodoBusqueda *Aux = lista;
-    while (Aux != NULL)
+    void borrarNodoLista(NodoBusqueda * &lista)
     {
-        NodoBusqueda *eliminado = Aux;
-        Aux = Aux->sig;
-        delete eliminado;
+        NodoBusqueda *Aux = lista;
+        while (Aux != NULL)
+        {
+            NodoBusqueda *eliminado = Aux;
+            Aux = Aux->sig;
+            delete eliminado;
+        }
+        lista = Aux;
     }
-    lista = Aux;
-}
 
-void agregarNodo(NodoBusqueda *&lista, Materia *puntero)
-{
-    NodoBusqueda *Nuevo = new NodoBusqueda();
-    Nuevo->materia = puntero;
-    Nuevo->sig = lista;
-    lista = Nuevo;
-}
+    void agregarNodo(NodoBusqueda * &lista, Materia * puntero)
+    {
+        NodoBusqueda *Nuevo = new NodoBusqueda();
+        Nuevo->materia = puntero;
+        Nuevo->sig = lista;
+        lista = Nuevo;
+    }
