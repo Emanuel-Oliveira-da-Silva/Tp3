@@ -29,6 +29,12 @@ struct Materia
     Materia *sig;
 };
 
+struct NodoBusqueda
+{
+    Materia *materia;
+    NodoBusqueda *sig;
+};
+
 #pragma endregion Estructuras
 
 #pragma region Funciones
@@ -60,6 +66,8 @@ void borrarMateria(Materia *&, Materia);
 void borrarIguales(Materia *&, Materia *);
 void duplicarLista(Materia *&, Materia *);
 void borrarLista(Materia *&);
+void borrarNodoLista(NodoBusqueda *&);
+void agregarNodo(NodoBusqueda *&, Materia *);
 
 #pragma endregion Funciones
 
@@ -162,7 +170,7 @@ void buscarArbol(Materia *listaMaterias)
         }
         if (!materia)
         {
-            cout << "ERROR 3: Materia no encontrada, Ingrese una materiaa valida" << endl
+            cout << "ERROR 3: Materia no encontrada, Ingrese una materia valida" << endl
                  << endl;
             rta = 0;
         }
@@ -327,6 +335,7 @@ NodoCorrelativa convertirFilaCorrelativa(Materia *lista, Fila fila)
 
 Materia *buscarNombre(Materia *lista, char nombre[])
 {
+    NodoBusqueda *listaAux = NULL;
     // simplificar el nombre
     simplificarString(nombre);
 
@@ -337,12 +346,62 @@ Materia *buscarNombre(Materia *lista, char nombre[])
         if (strstr(Aux->nombre, nombre) != NULL)
         {
             // si encuentra el nombre devolver el puntero
-            return Aux;
+            agregarNodo(listaAux, Aux);
         }
         Aux = Aux->sig;
     }
-    // si no lo encuentra devolver NULL
-    return NULL;
+    if (listaAux == NULL)
+    {
+        // si no lo encuentra devolver NULL
+        borrarNodoLista(listaAux);
+        return NULL;
+    }
+    else if (listaAux->sig == NULL)
+    {
+        // si no hay mas coincidencias devolver el primer nodo
+        Materia *Aux = listaAux->materia;
+        borrarNodoLista(listaAux);
+        return Aux;
+    }
+
+    cout << "Principales coincidencias: " << endl;
+    NodoBusqueda *aux = listaAux;
+    while (aux)
+    {
+
+        cout << aux->materia->codigo << ": " << aux->materia->nombre << endl;
+
+        aux = aux->sig;
+    }
+
+    Materia *materia = NULL;
+
+    do
+    {
+        int codigo = 0;
+        cout << "Ingrese el codigo de la materia que desea buscar: ";
+        cin >> codigo;
+
+        bool flag = false;
+        aux = listaAux;
+        while (aux)
+        {
+            if (codigo == aux->materia->codigo)
+                flag = true;
+            aux = aux->sig;
+        }
+
+        if (flag)
+            materia = busquedaCodigo(lista, codigo);
+
+        if (!materia)
+        {
+            cout << "ERROR 3: Materia no encontrada, Ingrese una materia valida" << endl
+                 << endl;
+        }
+    } while (!materia);
+
+    return materia;
 }
 
 Materia *busquedaNombre(Materia *lista, char nombre[])
@@ -653,4 +712,24 @@ void borrarLista(Materia *&lista)
         delete eliminado;
     }
     lista = Aux;
+}
+
+void borrarNodoLista(NodoBusqueda *&lista)
+{
+    NodoBusqueda *Aux = lista;
+    while (Aux != NULL)
+    {
+        NodoBusqueda *eliminado = Aux;
+        Aux = Aux->sig;
+        delete eliminado;
+    }
+    lista = Aux;
+}
+
+void agregarNodo(NodoBusqueda *&lista, Materia *puntero)
+{
+    NodoBusqueda *Nuevo = new NodoBusqueda();
+    Nuevo->materia = puntero;
+    Nuevo->sig = lista;
+    lista = Nuevo;
 }
