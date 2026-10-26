@@ -275,7 +275,11 @@ void cargarCorrelativas(FILE *archivo, Materia *&lista)
     // buscar materia con el mismo codigo
     Materia *Twin = busquedaCodigo(lista, fila.codigo);
 
-    if (Twin != NULL && busquedaNombre(lista, fila.nombreCorrelativa) != NULL)
+    char nombre[50];
+    strcpy(nombre, fila.nombreCorrelativa);
+    simplificarString(nombre);
+
+    if (Twin != NULL && busquedaNombre(lista, nombre) != NULL)
     {
         // Mismo codigo entonces adjuntar una nueva Correlativa a la lista de la materia
         NodoCorrelativa correlativa = convertirFilaCorrelativa(lista, fila);
@@ -301,7 +305,11 @@ Materia convertirFilaMateria(Fila fila, Materia *lista)
 NodoCorrelativa convertirFilaCorrelativa(Materia *lista, Fila fila)
 {
     // Buscar la Correlativa por nombre y cargarlo en la correlativa
-    Materia *Aux = busquedaNombre(lista, fila.nombreCorrelativa);
+    char nombre[50];
+    strcpy(nombre, fila.nombreCorrelativa);
+    simplificarString(nombre);
+
+    Materia *Aux = busquedaNombre(lista, nombre);
 
     // Si existe la correlativa la agregamos, si no, seguira siendo NULL
     if (Aux)
@@ -441,10 +449,10 @@ Materia *busquedaCodigo(Materia *lista, int codigo)
 
 void simplificarString(char nombre[])
 {
-
+    cout << "ANTES:" << nombre << endl;
     for (int i = 0; i < strlen(nombre); i++)
     {
-
+        cout << "LETRA: " << nombre[i] << " : " << (int)nombre[i] << endl;
         if (nombre[i] == 'á' || nombre[i] == 'Á' || nombre[i] == 'ä' || nombre[i] == 'Ä' ||
             nombre[i] == -96 || nombre[i] == -124 || nombre[i] == -114)
         {
@@ -477,7 +485,7 @@ void simplificarString(char nombre[])
         }
         nombre[i] = tolower(nombre[i]);
     }
-
+    cout << "DESPUES:" << nombre << endl;
     return;
 }
 
